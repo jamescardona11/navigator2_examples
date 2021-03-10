@@ -4,13 +4,18 @@ import 'package:navigator_example_1/my_app_path.dart';
 class MyAppRouteInformationParser extends RouteInformationParser<MyAppPath> {
   @override
   Future<MyAppPath> parseRouteInformation(RouteInformation routeInformation) async {
-    final uri = Uri.parse(routeInformation.location);
-
-    if (uri.pathSegments.isEmpty) {
-      return MyAppPath.home();
-    }
-
-    return MyAppPath.unknown();
+    return MyAppPath.parse(routeInformation.location);
+    // final uri = Uri.parse(routeInformation.location);
+    //
+    // if (uri.pathSegments.isEmpty) {
+    //   return MyAppPath.home();
+    // }
+    //
+    // if (uri.pathSegments.length == 2 && uri.pathSegments.first == 'detail') {
+    //   return MyAppPath.detail(uri.pathSegments.last);
+    // }
+    //
+    // return MyAppPath.unknown();
   }
 
   @override
@@ -21,6 +26,10 @@ class MyAppRouteInformationParser extends RouteInformationParser<MyAppPath> {
 
     if (path.isHomePage) {
       return RouteInformation(location: '/');
+    }
+
+    if (path.isDetailPage) {
+      return RouteInformation(location: '/detail/${path.id}');
     }
 
     return null;

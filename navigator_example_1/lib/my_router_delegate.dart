@@ -3,11 +3,13 @@ import 'package:navigator_example_1/my_app_path.dart';
 import 'package:navigator_example_1/page_manager.dart';
 import 'package:provider/provider.dart';
 
-import 'main.dart';
-
 class MyAppRouterDelegate extends RouterDelegate<MyAppPath> with ChangeNotifier, PopNavigatorRouterDelegateMixin {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
   final pageManager = PageManager();
+
+  MyAppRouterDelegate() {
+    pageManager.addListener(notifyListeners);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,7 +18,7 @@ class MyAppRouterDelegate extends RouterDelegate<MyAppPath> with ChangeNotifier,
       child: Consumer<PageManager>(
         builder: (context, value, child) => Navigator(
           pages: List.of(value.pages),
-          onPopPage: (route, result) => route.didPop(result),
+          onPopPage: (route, result) => _onPopPage(route, result),
         ),
       ),
     );
@@ -26,8 +28,19 @@ class MyAppRouterDelegate extends RouterDelegate<MyAppPath> with ChangeNotifier,
   GlobalKey<NavigatorState> get navigatorKey => _navigatorKey;
 
   @override
+  MyAppPath get currentConfiguration => pageManager.currentPath;
+
+  @override
   Future<void> setNewRoutePath(MyAppPath path) async {
-    // TODO: implement setNewRoutePath
-    throw UnimplementedError();
+    return pageManager.setNewRoutePath(path);
+  }
+
+  bool _onPopPage(Route<dynamic> route, dynamic result) {
+    final didPop = route.didPop(result);
+    if (!didPop) {
+      return false;
+    }
+
+    return pageManager.didPop(route.settings);
   }
 }
