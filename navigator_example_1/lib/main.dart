@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:navigator_example_1/page_manager.dart';
 
 import 'my_route_information_parser.dart';
 import 'my_router_delegate.dart';
@@ -29,7 +30,11 @@ class ListPage extends StatelessWidget {
         itemCount: 200,
         itemBuilder: (context, index) => Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text('Item $index'),
+          child: InkWell(
+              onTap: () {
+                PageManager.of(context).openDetails(index);
+              },
+              child: Text('Item $index')),
         ),
       ),
     );
